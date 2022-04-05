@@ -20,11 +20,17 @@ namespace TransformLerp.Base
         protected Transform _transform;
         protected bool _continuousAnimation;
 
-        protected virtual void Awake()
+        public IEnumerator LerpEnumerator { get; private set; }
+
+        private void Awake() => Init();
+        private void OnValidate() => Init();
+
+        private void Init()
         {
             _transform = this.transform;
             _animationCurve.postWrapMode = _animationMode;
             _continuousAnimation = _animationMode == WrapMode.PingPong || _animationMode == WrapMode.Loop;
+            LerpEnumerator = Lerp();
         }
 
         protected virtual IEnumerator Lerp()
@@ -36,7 +42,7 @@ namespace TransformLerp.Base
         {
             if (_isActive)
             {
-                StartCoroutine(Lerp());
+                StartCoroutine(LerpEnumerator);
             }
         }
 
